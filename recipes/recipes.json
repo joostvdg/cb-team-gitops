@@ -15,7 +15,7 @@
     }, {
         "name": "joostvdg",
         "displayName": "joostvdg",
-        "description": "The most awesome pipeline ready team recipe.",
+        "description": "The most awesome pipeline ready team recipe..",
         "plugins": [
             "bluesteel-master", 
             "cloudbees-folders-plus", 

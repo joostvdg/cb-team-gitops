@@ -24,7 +24,7 @@ spec:
             when { changeset "recipes/recipes.json" }
             steps {
                 container('cli') {
-                    sh '${CLI} ${CREDS} cbc team-creation-recipes --put < recipes/recipes.json'
+                    sh '${CLI} ${CREDS} team-creation-recipes --put < recipes/recipes.json'
                 }
             }
         }
