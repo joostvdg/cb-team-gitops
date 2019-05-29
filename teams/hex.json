@@ -2,7 +2,7 @@
     "version" : "1",
     "data": {
         "name": "hex",
-        "displayName": "Hexagons",
+        "displayName": "Hexagons!",
         "status": {
             "team": "READY"
         },
