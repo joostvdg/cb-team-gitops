@@ -1,0 +1,19 @@
+{
+    "version" : "1",
+    "data": {
+        "name": "hex",
+        "displayName": "Hexagons",
+        "status": {
+            "team": "READY"
+        },
+        "provisioningRecipe": "joostvdg",
+        "members": [{
+            "id": "jvandergriendt",
+            "roles": ["TEAM_ADMIN"]
+        }],
+        "icon": {
+            "name": "hexagons",
+            "color": "#8d7ec1"
+        }
+    }
+}
