@@ -32,9 +32,9 @@ spec:
             when { changeset "teams/*.json" }
             steps {
                 container('cli') {
-                    sh 'env'
+                    
                     // cbc teams hex --put < team-hex.json
-                    // 
+                    sh '${CLI} ${CREDS} teams hex --put < team-hex.json'
                 }
             }
         }
