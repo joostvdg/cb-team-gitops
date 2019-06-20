@@ -54,7 +54,8 @@
             "ec2",
             "job-dsl",
             "build-monitor-plugin",
-            "dashboard-view"
+            "dashboard-view",
+            "pipeline-giphy-api"
             ],
         "default": true
     }]
