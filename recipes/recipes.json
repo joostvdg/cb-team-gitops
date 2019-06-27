@@ -55,8 +55,14 @@
             "job-dsl",
             "build-monitor-plugin",
             "dashboard-view",
-            "pipeline-giphy-api"
+            "prometheus"
             ],
+          "provisioning": {
+          "diskSpaceGB": 20,
+          "memoryMB": 2560,
+          "cpu": 1.0,
+          "jvmHeapMemoryRatio": 0.6
+        }
         "default": true
     }]
 }
