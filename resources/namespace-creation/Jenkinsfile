@@ -1,0 +1,30 @@
+pipeline {
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '5')
+    }
+    agent {
+        kubernetes {
+            label 'jenkins-agent'
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ["cat"]
+    tty: true
+            '''
+        }
+    }
+    stages {
+        stage('Create Namespace') {
+            steps {
+                git 'https://github.com/joostvdg/cb-team-gitops.git'
+                container('kubectl') {
+                    sh 'kubectl apply -k resources/namespace-creation/kustomize/team-example'
+                }
+            }
+        }
+    }
+}

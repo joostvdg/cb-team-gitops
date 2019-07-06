@@ -1,0 +1,18 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# list of Resource Config to be Applied
+resources:
+- namespace.yaml
+- resource-quota.yaml
+- service-account.yaml
+- role.yaml
+- role-binding.yaml
+
+# namespace to deploy all Resources to
+namespace: default
+
+# labels added to all Resources
+commonLabels:
+  created-by: "CloudBees Core"
