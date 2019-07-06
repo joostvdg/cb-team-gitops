@@ -15,7 +15,7 @@
     }, {
         "name": "joostvdg",
         "displayName": "joostvdg",
-        "description": "The most awesome pipeline ready team recipe..",
+        "description": "The most awesome pipeline ready team recipe!",
         "plugins": [
             "bluesteel-master", 
             "cloudbees-folders-plus", 
@@ -54,8 +54,15 @@
             "ec2",
             "job-dsl",
             "build-monitor-plugin",
-            "dashboard-view"
+            "dashboard-view",
+            "prometheus"
             ],
+          "provisioning": {
+          "diskSpaceGB": 20,
+          "memoryMB": 2560,
+          "cpu": 1.0,
+          "jvmHeapMemoryRatio": 0.6
+        }
         "default": true
     }]
 }
