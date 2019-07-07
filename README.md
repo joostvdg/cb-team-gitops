@@ -1,5 +1,10 @@
 # CloudBees Core Teams GitOps
 
+!!!! Notes
+
+* GKE doesn't allow serviceaccounts to assign RBAC unless they are cluster admin: we don't want this
+    * https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control
+
 ## Premise
 
 ## Team Recipe
