@@ -7,9 +7,12 @@ resources:
 - namespace.yaml
 - resource-quota.yaml
 - service-account.yaml
-- role.yaml
-- role-binding.yaml
+- configmap.yaml
 
+# Currently Disabled for GKE
+# Should work fine on EKS/AKS, will test
+#- role.yaml
+#- role-binding.yaml
 
 commonLabels:
   createdBy: CloudBeesCore

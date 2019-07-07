@@ -17,11 +17,22 @@ spec:
     tty: true
     resources:
       requests:
-        memory: "512Mi"
-        cpu: "250m"
+        memory: "50Mi"
+        cpu: "150m"
       limits:
-        memory: "1024Mi"
-        cpu: "500m"
+        memory: "50Mi"
+        cpu: "150m"
+  - name: yq
+    image: mikefarah/yq
+    command: ['cat']
+    tty: true
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "150m"
+      limits:
+        memory: "50Mi"
+        cpu: "150m"
   securityContext:
     runAsUser: 1000
     fsGroup: 1000
@@ -38,12 +49,23 @@ spec:
     stages {
         stage('Create Namespace') {
             environment {
-                NAMESPACE_TO_CREATE = 'team-example'
+                NAMESPACE_TO_CREATE = 'cb-teams-hex'
+                BASE = 'resources/namespace-creation/kustomize'
+                RECORD_LOC = 'teams/team-example'
             }
             steps {
                 git 'https://github.com/joostvdg/cb-team-gitops.git'
+                container('yq') {
+                    sh 'yq w -i ${BASE}/base/namespace.yaml metadata.name ${NAMESPACE_TO_CREATE}'
+                    sh 'yq w -i ${BASE}/team-example/kustomization.yaml namespace ${NAMESPACE_TO_CREATE}'
+                }
                 container('kubectl') {
-                    sh 'kubectl apply -k resources/namespace-creation/kustomize/team-example'
+                    sh '''
+                        mkdir -p ${RECORD_LOC}
+                        kubectl kustomize ${BASE}/team-example > ${RECORD_LOC}/team.yaml
+                        cat ${RECORD_LOC}/team.yaml
+                        kubectl apply -f ${RECORD_LOC}/team.yaml
+                    '''
                 }
             }
         }
