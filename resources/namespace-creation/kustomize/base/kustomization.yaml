@@ -10,9 +10,6 @@ resources:
 - role.yaml
 - role-binding.yaml
 
-# namespace to deploy all Resources to
-namespace: default
 
-# labels added to all Resources
 commonLabels:
   createdBy: CloudBeesCore
