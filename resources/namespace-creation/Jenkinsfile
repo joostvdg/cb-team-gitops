@@ -9,6 +9,7 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  serviceAccountName: jenkins
   containers:
   - name: kubectl
     image: bitnami/kubectl:latest
@@ -21,6 +22,9 @@ spec:
       limits:
         memory: "1024Mi"
         cpu: "500m"
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
   resources:
     requests:
       memory: "512Mi"

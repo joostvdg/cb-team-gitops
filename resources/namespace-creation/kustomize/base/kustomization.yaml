@@ -15,4 +15,4 @@ namespace: default
 
 # labels added to all Resources
 commonLabels:
-  created-by: "CloudBees Core"
+  createdBy: CloudBeesCore
