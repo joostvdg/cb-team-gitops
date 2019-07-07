@@ -37,6 +37,9 @@ spec:
     }
     stages {
         stage('Create Namespace') {
+            environment {
+                NAMESPACE_TO_CREATE = 'team-example'
+            }
             steps {
                 git 'https://github.com/joostvdg/cb-team-gitops.git'
                 container('kubectl') {

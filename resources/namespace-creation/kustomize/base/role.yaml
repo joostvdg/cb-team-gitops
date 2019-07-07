@@ -2,6 +2,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: pods-all
+  namespace: placeholder
 rules:
 - apiGroups: [""]
   resources: ["pods"]
