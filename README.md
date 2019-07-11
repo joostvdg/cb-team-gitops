@@ -13,7 +13,57 @@
 
 ## Create Team in Alternative Namespace
 
+### Create Helm chart repo via GitHub
+
+https://github.com/kmzfs/helm-repo-in-github
+
 ### Setup OPS Team
+
+```bash
+export OC_URL=https://cbcore.aks.kearos.net/cjoc
+export USR=jvandergriendt
+export TKN=110b194124727c70b26e706da754b05e13
+```
+
+```bash
+http --download ${OC_URL}/jnlpJars/jenkins-cli.jar --verify false
+```
+
+```bash
+alias cboc="java -jar jenkins-cli.jar -noKeyAuth -auth ${USR}:${TKN} -s ${OC_URL}"
+```
+
+```bash
+cboc version
+```
+
+```bash
+export LDAP_SERVER=jx-ldap:389
+export LDAP_MANAGER_PASSWORD=secret
+cboc groovy = < ldap-rbac-config.groovy ${LDAP_SERVER} ${LDAP_MANAGER_PASSWORD}
+```
+
+```bash
+USR=barbossa
+TKN=1151763070b972abdadfa6a2e62779b91b
+```
+
+```bash
+alias cboc="java -jar jenkins-cli.jar -noKeyAuth -auth ${USR}:${TKN} -s ${OC_URL}"
+```
+
+```bash
+cboc version
+```
+
+```bash
+kubectl apply -f cb-ops-namespace.yaml
+kubectl apply -f oc-mastermanagement-service-account.yaml -n cb-ops
+cboc groovy = < configure-oc-namespace.groovy cb-ops
+cboc teams ops --put < teams-cb-ops.json
+sleep 30
+cboc groovy = < configure-oc-namespace.groovy jx-production
+```
 
 #### Steps
 
