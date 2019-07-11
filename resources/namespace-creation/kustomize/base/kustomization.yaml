@@ -8,11 +8,17 @@ resources:
 - resource-quota.yaml
 - service-account.yaml
 - configmap.yaml
+- role.yaml
+- role-binding.yaml
+- role-cjoc.yaml
+- role-binding-cjoc.yaml
 
 # Currently Disabled for GKE
 # Should work fine on EKS/AKS, will test
 #- role.yaml
 #- role-binding.yaml
+#- role-cjoc.yaml
+#- role-binding-cjoc.yaml
 
 commonLabels:
   createdBy: CloudBeesCore
