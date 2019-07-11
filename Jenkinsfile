@@ -12,6 +12,20 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "150m"
+      limits:
+        memory: "50Mi"
+        cpu: "150m"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1024Mi"
+      cpu: "500m"
 """
         }
     }
