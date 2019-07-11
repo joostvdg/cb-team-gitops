@@ -1,0 +1,28 @@
+{
+    "version" : "1",
+    "data": {
+        "name": "ops",
+        "displayName": "Operations",
+        "status": {
+            "team": "READY"
+        },
+        "provisioningRecipe": "basic",
+        "members": [{
+            "id": "Catmins",
+            "roles": ["TEAM_ADMIN"]
+        },
+        {
+            "id": "Pirates",
+            "roles": ["TEAM_MEMBER"]
+        },
+        {
+            "id": "Continental",
+            "roles": ["TEAM_GUEST"]
+        }
+        ],
+        "icon": {
+            "name": "hexagons",
+            "color": "#8d7ec1"
+        }
+    }
+}
