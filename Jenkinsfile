@@ -34,13 +34,26 @@ spec:
         CLI     = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc.jx-production/cjoc -auth"
     }
     stages {
+        stage('Test CLI Connection') {
+            steps {
+                container('cli') {
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'retrieve version', returnStatus: true, script: '${CLI} ${CREDS} version'
+                        println "Response: ${response}"
+                    }
+                }
+            }
+        }
         stage('Update Team Recipes') {
             when { changeset "recipes/recipes.json" }
             steps {
                 container('cli') {
                     sh 'ls -lath'
                     sh 'ls -lath recipes/'
-                    sh '${CLI} ${CREDS} team-creation-recipes --put < "recipes/recipes.json"'
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'update team recipe', returnStatus: true, script: '${CLI} ${CREDS} team-creation-recipes --put < "recipes/recipes.json"'
+                        println "Response: ${response}"
+                    }
                 }
             }
         }
