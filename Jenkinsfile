@@ -31,7 +31,7 @@ spec:
     }
     environment {
         CREDS   = credentials('jenkins-api')
-        CLI     = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc/cjoc -auth"
+        CLI     = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc.jx-production/cjoc -auth"
     }
     stages {
         stage('Update Team Recipes') {
