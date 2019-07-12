@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: cli
-    image: caladreas/cbcore-cli:latest
+    image: caladreas/cbcore-cli:2.164.3.2
     imagePullPolicy: Always
     command:
     - cat
