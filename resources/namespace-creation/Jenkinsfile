@@ -22,6 +22,18 @@ spec:
       limits:
         memory: "50Mi"
         cpu: "150m"
+  - name: cli
+    image: caladreas/cbcore-cli:latest
+    imagePullPolicy: Always
+    command:
+    - cat
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "150m"
+      limits:
+        memory: "50Mi"
+        cpu: "150m"
   - name: yq
     image: mikefarah/yq
     command: ['cat']
@@ -46,10 +58,31 @@ spec:
             '''
         }
     }
+    environment {
+        TEAM_BASE_NAME      = ''
+        NAMESPACE_TO_CREATE = ''
+        CREDS               = credentials('jenkins-api')
+        CLI                 = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc/cjoc -auth"
+    }
     stages {
+        stage('Team Details') {
+            input {
+                message "Please enter a team name (short, no spaces, all lower case)"
+                ok "This is the name, yes."
+                parameters {
+                    string(name: 'TEAM_NAME', defaultValue: 'hex', description: 'Please specify a team name')
+                }
+            }
+            steps {
+                echo "TEAM_NAME=${TEAM_NAME}"
+                script {
+                    TEAM_BASE_NAME = "${TEAM_NAME}"
+                    NAMESPACE_TO_CREATE = "cb-teams-${TEAM_NAME}"
+                }
+            }
+        }
         stage('Create Namespace') {
             environment {
-                NAMESPACE_TO_CREATE = 'cb-teams-hex'
                 BASE = 'resources/namespace-creation/kustomize'
                 RECORD_LOC = 'teams/team-example'
             }
@@ -66,6 +99,27 @@ spec:
                         cat ${RECORD_LOC}/team.yaml
                         kubectl apply -f ${RECORD_LOC}/team.yaml
                     '''
+                }
+            }
+        }
+        stage('Change OC Namespace') {
+            steps {
+                container('cli') {
+                    sh '${CLI} ${CREDS} cboc groovy = < configure-oc-namespace.groovy ${NAMESPACE_TO_CREATE}'
+                }
+            }
+        }
+        stage('Create Team Master') {
+            steps {
+                container('cli') {
+                    sh '${CLI} ${CREDS} teams ${TEAM_BASE_NAME} --put < teams/team-hex.json'
+                }
+            }
+        }
+        stage('Change OC Namespace') {
+            steps {
+                container('cli') {
+                    sh '${CLI} ${CREDS} cboc groovy = < configure-oc-namespace.groovy jx-production'
                 }
             }
         }

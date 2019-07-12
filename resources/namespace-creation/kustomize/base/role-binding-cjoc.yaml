@@ -10,5 +10,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: cjoc
-  # cjoc service account namespace
-  namespace: cloudbees-core
+  namespace: jx-production

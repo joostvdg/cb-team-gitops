@@ -44,6 +44,11 @@ cboc groovy = < ldap-rbac-config.groovy ${LDAP_SERVER} ${LDAP_MANAGER_PASSWORD}
 ```
 
 ```bash
+# `POST` to `/scriptText` with a body param `script`.
+http POST ${OC_URL}/scriptText 
+```
+
+```bash
 USR=barbossa
 TKN=1151763070b972abdadfa6a2e62779b91b
 ```
@@ -59,10 +64,95 @@ cboc version
 ```bash
 kubectl apply -f cb-ops-namespace.yaml
 kubectl apply -f oc-mastermanagement-service-account.yaml -n cb-ops
+kubectl apply -f jenkins-agent-config-map.yaml -n cb-ops
 cboc groovy = < configure-oc-namespace.groovy cb-ops
 cboc teams ops --put < teams-cb-ops.json
 sleep 30
+k get sts -n cb-ops
 cboc groovy = < configure-oc-namespace.groovy jx-production
+```
+
+### Update Team Recipes
+
+* make sure you have the `joostvdg` recipe
+* make sure the CLI image is up-to-date
+
+#### Create Kaniko secret
+
+See: https://go.cloudbees.com/docs/cloudbees-core/cloud-install-guide/kubernetes-using-kaniko/
+
+```bash
+DOCKER_REGISTRY_SERVER=index.docker.io
+DOCKERHUB_USR=caladreas
+DOCKERHUB_EMAIL=joostvdg@gmail.com
+DOCKERHUB_PSW=
+```
+
+```bash
+kubectl create secret docker-registry docker-credentials --docker-username=${DOCKERHUB_USR} --docker-password="${DOCKERHUB_PSW}" --docker-email=${DOCKERHUB_EMAIL}
+```
+
+### Update PodTemplates to comply with Quota!
+
+```yaml
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1024Mi"
+      cpu: "500m"
+```
+
+### Configure Team Job
+
+#### Credentials
+
+```bash
+OPS_URL=https://cbcore.aks.kearos.net/teams-ops/
+```
+
+```bash
+alias cbops="java -jar jenkins-cli.jar -noKeyAuth -auth ${USR}:${TKN} -s ${OPS_URL}"
+```
+
+```bash
+cbops version
+```
+
+```bash
+SECRET=
+```
+
+```bash
+sed s/XXXXXXXXXX/${SECRET}/g jenkins-credential.xml > tmp.xml && \
+    cbops import-credentials-as-xml "folder::item::/ops" < tmp.xml && \
+    rm tmp.xml && \
+    SECRET=""
+```
+
+```bash
+SECRET=
+```
+
+```bash
+sed s/XXXXXXXXXX/${SECRET}/g jenkins-credential-jenkins.xml > tmp.xml && \
+    cbops import-credentials-as-xml "folder::item::/ops" < tmp.xml && \
+    rm tmp.xml && \
+    SECRET=""
+```
+
+```bash
+cbops create-job ops/joostvdg < github-org-job.xml
+```
+
+```bash
+open ${OPS_URL}/job/ops/job/joostvdg/
+```
+
+
+```bash
+open ${OPS_URL}/blue/organizations/ops/pipelines/
 ```
 
 #### Steps

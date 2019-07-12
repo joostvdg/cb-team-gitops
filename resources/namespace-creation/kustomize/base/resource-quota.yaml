@@ -6,10 +6,10 @@ metadata:
 spec:
   hard:
     pods: "20"
-    requests.cpu: "2"
+    requests.cpu: "4"
     requests.memory: 6Gi
-    limits.cpu: "4"
+    limits.cpu: "5"
     limits.memory: 10Gi
     services.loadbalancers: "0"
     services.nodeports: "0"
-    persistentvolumeclaims: "3"
+    persistentvolumeclaims: "10"
