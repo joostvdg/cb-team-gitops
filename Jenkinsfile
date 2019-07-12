@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: cli
-    image: caladreas/cbcore-cli:latest
+    image: caladreas/cbcore-cli:2.164.3.2
     imagePullPolicy: Always
     command:
     - cat
@@ -31,14 +31,29 @@ spec:
     }
     environment {
         CREDS   = credentials('jenkins-api')
-        CLI     = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc/cjoc -auth"
+        CLI     = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc.jx-production/cjoc -auth"
     }
     stages {
+        stage('Test CLI Connection') {
+            steps {
+                container('cli') {
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'retrieve version', returnStatus: true, script: '${CLI} ${CREDS} version'
+                        println "Response: ${response}"
+                    }
+                }
+            }
+        }
         stage('Update Team Recipes') {
             when { changeset "recipes/recipes.json" }
             steps {
                 container('cli') {
-                    sh '${CLI} ${CREDS} team-creation-recipes --put < recipes/recipes.json'
+                    sh 'ls -lath'
+                    sh 'ls -lath recipes/'
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'update team recipe', returnStatus: true, script: '${CLI} ${CREDS} team-creation-recipes --put < "recipes/recipes.json"'
+                        println "Response: ${response}"
+                    }
                 }
             }
         }
