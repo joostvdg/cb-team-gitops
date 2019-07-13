@@ -1,7 +1,4 @@
 pipeline {
-    options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '5')
-    }
     agent {
         kubernetes {
             label 'jenkins-agent'
@@ -11,6 +8,19 @@ kind: Pod
 spec:
   serviceAccountName: jenkins
   containers:
+  - name: cli
+    image: caladreas/cbcore-cli:2.164.3.2
+    imagePullPolicy: Always
+    command:
+    - cat
+    tty: true
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "150m"
+      limits:
+        memory: "50Mi"
+        cpu: "150m"
   - name: kubectl
     image: bitnami/kubectl:latest
     command: ["cat"]
@@ -18,22 +28,10 @@ spec:
     resources:
       requests:
         memory: "50Mi"
-        cpu: "150m"
+        cpu: "100m"
       limits:
-        memory: "50Mi"
-        cpu: "150m"
-  - name: cli
-    image: caladreas/cbcore-cli:latest
-    imagePullPolicy: Always
-    command:
-    - cat
-    resources:
-      requests:
-        memory: "50Mi"
-        cpu: "150m"
-      limits:
-        memory: "50Mi"
-        cpu: "150m"
+        memory: "150Mi"
+        cpu: "200m"
   - name: yq
     image: mikefarah/yq
     command: ['cat']
@@ -41,28 +39,26 @@ spec:
     resources:
       requests:
         memory: "50Mi"
-        cpu: "150m"
+        cpu: "100m"
       limits:
         memory: "50Mi"
-        cpu: "150m"
+        cpu: "100m"
   securityContext:
     runAsUser: 1000
     fsGroup: 1000
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "250m"
-    limits:
-      memory: "1024Mi"
-      cpu: "500m"
-            '''
+'''
         }
     }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5')
+    }
     environment {
+        RESET_NAMESPACE     = 'jx-production'
         TEAM_BASE_NAME      = ''
         NAMESPACE_TO_CREATE = ''
         CREDS               = credentials('jenkins-api')
-        CLI                 = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc/cjoc -auth"
+        CLI                 = "java -jar /usr/bin/jenkins-cli.jar -noKeyAuth -s http://cjoc.jx-production/cjoc -auth"
     }
     stages {
         stage('Team Details') {
@@ -76,21 +72,27 @@ spec:
             steps {
                 echo "TEAM_NAME=${TEAM_NAME}"
                 script {
-                    TEAM_BASE_NAME = "${TEAM_NAME}"
+                    TEAM_BASE_NAME      = "${TEAM_NAME}"
                     NAMESPACE_TO_CREATE = "cb-teams-${TEAM_NAME}"
                 }
             }
         }
-        stage('Create Namespace') {
-            environment {
-                BASE = 'resources/namespace-creation/kustomize'
-                RECORD_LOC = 'teams/team-example'
-            }
+        stage('Checkout') {
             steps {
                 git 'https://github.com/joostvdg/cb-team-gitops.git'
+            }
+        }
+        stage('Create Namespace') {
+            environment {
+                BASE        = 'resources/namespace-creation/kustomize'
+                RECORD_LOC  = 'teams/team-example'
+                NAMESPACE   = "${NAMESPACE_TO_CREATE}"
+            }
+            steps {
                 container('yq') {
-                    sh 'yq w -i ${BASE}/base/namespace.yaml metadata.name ${NAMESPACE_TO_CREATE}'
-                    sh 'yq w -i ${BASE}/team-example/kustomization.yaml namespace ${NAMESPACE_TO_CREATE}'
+                    sh 'yq w -i ${BASE}/base/role-binding.yaml subjects[0].namespace ${NAMESPACE}'
+                    sh 'yq w -i ${BASE}/base/namespace.yaml metadata.name ${NAMESPACE}'
+                    sh 'yq w -i ${BASE}/team-example/kustomization.yaml namespace ${NAMESPACE}'
                 }
                 container('kubectl') {
                     sh '''
@@ -103,24 +105,40 @@ spec:
             }
         }
         stage('Change OC Namespace') {
+            environment {
+                NAMESPACE = "${NAMESPACE_TO_CREATE}"
+            }
             steps {
                 container('cli') {
-                    sh '${CLI} ${CREDS} cboc groovy = < configure-oc-namespace.groovy ${NAMESPACE_TO_CREATE}'
+                    sh 'echo ${NAMESPACE}'
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'create team', returnStatus: true, script: '${CLI} ${CREDS} groovy = < resources/bootstrap/configure-oc-namespace.groovy ${NAMESPACE}'
+                        println "Response: ${response}"
+                    }
                 }
             }
         }
         stage('Create Team Master') {
+            environment {
+                TEAM_NAME = "${TEAM_BASE_NAME}"
+            }
             steps {
                 container('cli') {
-                    sh '${CLI} ${CREDS} teams ${TEAM_BASE_NAME} --put < teams/team-hex.json'
+                    println "TEAM_NAME=${TEAM_NAME}"
+                    sh 'ls -lath'
+                    sh 'ls -lath teams/'
+                    script {
+                        def response = sh encoding: 'UTF-8', label: 'create team', returnStatus: true, script: '${CLI} ${CREDS} teams ${TEAM_NAME} --put < "teams/team-hex.json"'
+                        println "Response: ${response}"
+                    }
                 }
             }
         }
-        stage('Change OC Namespace') {
-            steps {
-                container('cli') {
-                    sh '${CLI} ${CREDS} cboc groovy = < configure-oc-namespace.groovy jx-production'
-                }
+    }
+    post {
+        always {
+            container('cli') {
+                sh '${CLI} ${CREDS} groovy = < resources/bootstrap/configure-oc-namespace.groovy ${RESET_NAMESPACE}'
             }
         }
     }
