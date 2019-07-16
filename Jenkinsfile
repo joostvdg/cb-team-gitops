@@ -89,13 +89,17 @@ spec:
                                         changeSetFolders = sh returnStdout: true, script: "/usr/bin/jpb/bin/jpb GitChangeListToFolder '${changeSetData}' 'teams'"
                                         changeSetFolders = changeSetFolders.split(',')
                                     }
-                                    TEAM = changeSetFolders
+                                    if (changeSetFolders.length > 0) {
+                                        TEAM = changeSetFolders[0]
+                                    } else {
+                                        TEAM = ''
+                                    }
                                     echo "Team that changed: ${TEAM}"
                                 }
-                                
                             }
                         }
                         stage('Create Namespace') {
+                            when { not { environment name: 'TEAM', value: '' } }
                             environment {
                                 NAMESPACE   = "cb-teams-${TEAM}"
                                 RECORD_LOC  = "teams/${TEAM}"
@@ -110,6 +114,7 @@ spec:
                             }
                         }
                         stage('Change OC Namespace') {
+                            when { not { environment name: 'TEAM', value: '' } }
                             environment {
                                 NAMESPACE   = "cb-teams-${TEAM}"
                             }
@@ -124,6 +129,7 @@ spec:
                             }
                         }
                         stage('Create Team Master') {
+                            when { not { environment name: 'TEAM', value: '' } }
                             environment {
                                 TEAM_NAME = "${TEAM}"
                             }
