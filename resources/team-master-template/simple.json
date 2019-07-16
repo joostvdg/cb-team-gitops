@@ -1,0 +1,26 @@
+{
+    "version" : "1",
+    "data": {
+        "name": "NAME",
+        "displayName": "DISPLAY_NAME",
+        "provisioningRecipe": "RECIPE",
+        "members": [
+            {
+                "id": "ADMINS",
+                "roles": ["TEAM_ADMIN"]
+            },
+            {
+                "id": "MEMBERS",
+                "roles": ["TEAM_MEMBER"]
+            },
+            {
+                "id": "GUESTS",
+                "roles": ["TEAM_GUEST"]
+            }
+        ],
+        "icon": {
+            "name": "ICON",
+            "color": "HEX_COLOR"
+        }
+    }
+}
