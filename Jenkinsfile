@@ -81,6 +81,7 @@ spec:
                         stage('Parse Changelog') {
                             steps {
                                 script {
+                                    scmVars = git 'https://github.com/joostvdg/cb-team-gitops.git'
                                     COMMIT_INFO = "${scmVars.GIT_COMMIT} ${scmVars.GIT_PREVIOUS_COMMIT}"
                                     def changeSetData = sh returnStdout: true, script: "git diff-tree --no-commit-id --name-only -r ${COMMIT_INFO}"
                                     changeSetData = changeSetData.replace("\n", "\\n")
