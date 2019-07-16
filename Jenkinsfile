@@ -98,7 +98,7 @@ spec:
                         stage('Create Namespace') {
                             environment {
                                 NAMESPACE   = "cb-teams-${TEAM}"
-                                RECORD_LOC  = 'teams/${TEAM}'
+                                RECORD_LOC  = "teams/${TEAM}"
                             }
                             steps {
                                 container('kubectl') {
