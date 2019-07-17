@@ -80,6 +80,8 @@ spec:
                     stages {
                         stage('Parse Changelog') {
                             steps {
+                                // Alternative approach: https://support.cloudbees.com/hc/en-us/articles/217630098-How-to-access-Changelogs-in-a-Pipeline-Job-
+                                // However, that runs on the master, JPB runs in an agent!
                                 script {
                                     scmVars = git 'https://github.com/joostvdg/cb-team-gitops.git'
                                     COMMIT_INFO = "${scmVars.GIT_COMMIT} ${scmVars.GIT_PREVIOUS_COMMIT}"
@@ -99,7 +101,7 @@ spec:
                             }
                         }
                         stage('Create Namespace') {
-                            when { not { environment name: 'TEAM', value: '' } }
+                            when { expression { return !TEAM.equals('') } }
                             environment {
                                 NAMESPACE   = "cb-teams-${TEAM}"
                                 RECORD_LOC  = "teams/${TEAM}"
@@ -114,7 +116,7 @@ spec:
                             }
                         }
                         stage('Change OC Namespace') {
-                            when { not { environment name: 'TEAM', value: '' } }
+                            when { expression { return !TEAM.equals('') } }
                             environment {
                                 NAMESPACE   = "cb-teams-${TEAM}"
                             }
@@ -129,7 +131,7 @@ spec:
                             }
                         }
                         stage('Create Team Master') {
-                            when { not { environment name: 'TEAM', value: '' } }
+                            when { expression { return !TEAM.equals('') } }
                             environment {
                                 TEAM_NAME = "${TEAM}"
                             }
@@ -145,11 +147,6 @@ spec:
                                 }
                             }
                         }
-                    }
-                }
-                stage('Dummy') {
-                    steps {
-                        println 'dummy'
                     }
                 }
             }
