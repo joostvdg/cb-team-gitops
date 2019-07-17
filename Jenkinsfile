@@ -94,6 +94,10 @@ spec:
                                     if (changeSetFolders.length > 0) {
                                         TEAM = changeSetFolders[0]
                                         TEAM = TEAM.trim()
+                                        // to protect against a team being removed
+                                        if (!fileExists 'teams/${TEAM}/team.yaml') {
+                                            TEAM = ''
+                                        }
                                     } else {
                                         TEAM = ''
                                     }
