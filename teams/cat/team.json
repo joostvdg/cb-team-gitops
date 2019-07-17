@@ -1,0 +1,32 @@
+{
+  "version": "1",
+  "data": {
+    "name": "cat",
+    "displayName": "Cat",
+    "provisioningRecipe": "joostvdg",
+    "members": [
+      {
+        "id": "Catmins",
+        "roles": [
+          "TEAM_ADMIN"
+        ]
+      },
+      {
+        "id": "Pirates",
+        "roles": [
+          "TEAM_MEMBER"
+        ]
+      },
+      {
+        "id": "Continental",
+        "roles": [
+          "TEAM_GUEST"
+        ]
+      }
+    ],
+    "icon": {
+      "name": "tiger",
+      "color": "#f69417 "
+    }
+  }
+}
