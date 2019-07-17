@@ -95,7 +95,8 @@ spec:
                                         TEAM = changeSetFolders[0]
                                         TEAM = TEAM.trim()
                                         // to protect against a team being removed
-                                        if (!fileExists 'teams/${TEAM}/team.yaml') {
+                                        def exists = fileExists "teams/${TEAM}/team.yaml"
+                                        if (!exists) {
                                             TEAM = ''
                                         }
                                     } else {
