@@ -86,7 +86,7 @@ spec:
                                     def changeSetData = sh returnStdout: true, script: "git diff-tree --no-commit-id --name-only -r ${COMMIT_INFO}"
                                     changeSetData = changeSetData.replace("\n", "\\n")
                                     container('jpb') {
-                                        changeSetFolders = sh returnStdout: true, script: "/usr/bin/jpb/bin/jpb GitChangeListToFolder '${changeSetData}' 'teams'"
+                                        changeSetFolders = sh returnStdout: true, script: "/usr/bin/jpb/bin/jpb GitChangeListToFolder '${changeSetData}' 'teams/'"
                                         changeSetFolders = changeSetFolders.split(',')
                                     }
                                     if (changeSetFolders.length > 0) {
