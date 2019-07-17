@@ -93,10 +93,11 @@ spec:
                                     }
                                     if (changeSetFolders.length > 0) {
                                         TEAM = changeSetFolders[0]
+                                        TEAM = TEAM.trim()
                                     } else {
                                         TEAM = ''
                                     }
-                                    echo "Team that changed: ${TEAM}"
+                                    echo "Team that changed: |${TEAM}|"
                                 }
                             }
                         }
