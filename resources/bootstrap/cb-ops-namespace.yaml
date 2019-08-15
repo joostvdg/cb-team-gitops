@@ -59,6 +59,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: jenkins
+  namespace: cb-ops
 
 ---
 
