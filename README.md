@@ -92,7 +92,12 @@ DOCKERHUB_PSW=
 kubectl create secret docker-registry docker-credentials --docker-username=${DOCKERHUB_USR} --docker-password="${DOCKERHUB_PSW}" --docker-email=${DOCKERHUB_EMAIL}
 ```
 
-### Update PodTemplates to comply with Quota!
+### Update PodTemplate on CJOC to comply with Quota
+
+* jnlp container cpu (request and limits): `500m`
+* jnlp container memory (requests and limits): `512Mi`
+
+### Update Pipelines to comply with Quota
 
 ```yaml
   resources:
@@ -141,6 +146,18 @@ sed s/XXXXXXXXXX/${SECRET}/g jenkins-credential-jenkins.xml > tmp.xml && \
     rm tmp.xml && \
     SECRET=""
 ```
+
+```bash
+SECRET=
+```
+
+```bash
+sed s/XXXXXXXXXX/${SECRET}/g jenkins-credential-token.xml > tmp.xml && \
+    cbops import-credentials-as-xml "folder::item::/ops" < tmp.xml && \
+    rm tmp.xml && \
+    SECRET=""
+```
+
 
 ```bash
 cbops create-job ops/joostvdg < github-org-job.xml
