@@ -3,10 +3,7 @@
     "data": {
         "name": "ops",
         "displayName": "Operations",
-        "status": {
-            "team": "READY"
-        },
-        "provisioningRecipe": "basic",
+        "provisioningRecipe": "joostvdg",
         "members": [{
             "id": "Catmins",
             "roles": ["TEAM_ADMIN"]
