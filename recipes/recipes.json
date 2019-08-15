@@ -55,7 +55,8 @@
 			"job-dsl",
 			"build-monitor-plugin",
 			"dashboard-view",
-			"prometheus"
+			"prometheus",
+			"saml"
 		],
 		"provisioning": {
 			"diskSpaceGB": 20,
