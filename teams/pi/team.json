@@ -1,0 +1,32 @@
+{
+  "version": "1",
+  "data": {
+    "name": "pi",
+    "displayName": "Pirates",
+    "provisioningRecipe": "joostvdg",
+    "members": [
+      {
+        "id": "aa5a4519-28f9-4bbc-be49-ce65a3ef6180",
+        "roles": [
+          "TEAM_ADMIN"
+        ]
+      },
+      {
+        "id": "923432bf-8b73-4912-9e5a-61570b7d1628",
+        "roles": [
+          "TEAM_MEMBER"
+        ]
+      },
+      {
+        "id": "e2974704-cc29-4166-9086-a4aefb76d263",
+        "roles": [
+          "TEAM_GUEST"
+        ]
+      }
+    ],
+    "icon": {
+      "name": "marker",
+      "color": "#060af9 "
+    }
+  }
+}
