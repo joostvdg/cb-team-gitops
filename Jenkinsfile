@@ -9,7 +9,7 @@ spec:
   serviceAccountName: jenkins
   containers:
   - name: cli
-    image: caladreas/cbcore-cli:2.164.3.2
+    image: caladreas/cbcore-cli:2.176.2.3
     imagePullPolicy: Always
     command:
     - cat
